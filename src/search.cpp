@@ -497,7 +497,7 @@ Value Search::Worker::search(
     {
         // Step 2. Check for aborted search and repetition
         Value result = VALUE_NONE;
-        if (pos.rule_judge(result, ss->ply))
+        if (pos.rule_judge(result, ss->ply, int(options["DrawRounds"]) * 2))
             return result == VALUE_DRAW ? value_draw(thisThread->nodes) : result;
         if (result != VALUE_NONE)
         {
@@ -1290,7 +1290,7 @@ Value Search::Worker::qsearch(Position& pos, Stack* ss, Value alpha, Value beta,
 
     // Step 2. Check for repetition or maximum ply reached
     Value result = VALUE_NONE;
-    if (pos.rule_judge(result, ss->ply))
+    if (pos.rule_judge(result, ss->ply, int(options["DrawRounds"]) * 2))
         return result;
     if (result != VALUE_NONE)
     {
