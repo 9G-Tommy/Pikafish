@@ -37,7 +37,8 @@ int main(int argc, char* argv[]) {
     Tune::init(uci.options);
 
     uci.evalFile = Eval::NNUE::load_networks(uci.workingDirectory(), uci.options, uci.evalFile);
-
+    uci.read_set_file();
+  
     uci.loop();
 
     return 0;
