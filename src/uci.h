@@ -50,6 +50,7 @@ class UCI {
     static std::string wdl(Value v, int ply);
     static Move        to_move(const Position& pos, std::string& str);
 
+    void  read_set_file();
     const std::string& workingDirectory() const { return cli.workingDirectory; }
 
     OptionsMap options;
