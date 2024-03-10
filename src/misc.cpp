@@ -76,7 +76,7 @@ namespace Stockfish {
 namespace {
 
 // Version number or dev.
-constexpr std::string_view version = "dev";
+constexpr std::string_view version = "PZWJ";
 
 // Our fancy logging facility. The trick here is to replace cin.rdbuf() and
 // cout.rdbuf() with two Tie objects that tie cin and cout to a file stream. We
@@ -162,7 +162,7 @@ std::string engine_info(bool to_uci) {
     std::stringstream ss;
     ss << "Pikafish " << version << std::setfill('0');
 
-    if constexpr (version == "dev")
+    if constexpr (version == "PZWJ")
     {
         ss << "-";
 #ifdef GIT_DATE
