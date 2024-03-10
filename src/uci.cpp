@@ -26,6 +26,7 @@
 #include <deque>
 #include <memory>
 #include <optional>
+#include <fstream>
 #include <sstream>
 #include <vector>
 #include <cstdint>
@@ -71,8 +72,12 @@ UCI::UCI(int argc, char** argv) :
     options["EvalFile"] << Option(EvalFileDefaultName, [this](const Option&) {
         evalFile = Eval::NNUE::load_networks(cli.binaryDirectory, options, evalFile);
     });
-
+    // 不建议设置为30以下的数值
+    options["DrawRounds"] << Option(60, 0, 500);
+  
     threads.set({options, threads, tt});
+
+    search_clear();  // After threads are up
 
     search_clear();  // After threads are up
 }
@@ -387,6 +392,33 @@ Move UCI::to_move(const Position& pos, std::string& str) {
             return m;
 
     return Move::none();
+}
+
+void UCI::read_set_file() {
+	const char* setFile = "setting.ini";
+    std::fstream fp;
+    fp.open(setFile, std::ios::in);
+    if (!fp.fail()) {
+        const int cmdLen = 256;
+        char input[cmdLen];
+        while (!fp.eof()) {
+            fp.getline(input, cmdLen);
+            if (fp.fail())
+                break;
+            if (input[0] == '[' || input[0] == '#' || strlen(input) <= 2)
+                continue;
+            for (unsigned int i = 0; i < sizeof(input); i++) {
+                if (input[i] == '=')
+                    input[i] = ' ';
+            }
+            std::istringstream theCMD(input);
+            options.setoption(theCMD);
+        }
+    }
+    else{
+    	std::cout << "Cannot open set file '" << setFile << "'!" << std::endl;
+	}
+    fp.close();
 }
 
 }  // namespace Stockfish
