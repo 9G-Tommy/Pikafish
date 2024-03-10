@@ -36,24 +36,28 @@ bool CaseInsensitiveLess::operator()(const std::string& s1, const std::string& s
       [](char c1, char c2) { return std::tolower(c1) < std::tolower(c2); });
 }
 
-void OptionsMap::setoption(std::istringstream& is) {
+  void OptionsMap::setoption(std::istringstream& is) {
+
     std::string token, name, value;
 
-    is >> token;  // Consume the "name" token
+    is >> token; // Consume the "name" token
+    if (token == "name")
+        is >> token;
 
-    // Read the option name (can contain spaces)
-    while (is >> token && token != "value")
-        name += (name.empty() ? "" : " ") + token;
+    name += (name.empty() ? "" : " ") + token;
+    is >> token;
+    if (token == "value")
+        is >> token;
 
-    // Read the option value (can contain spaces)
-    while (is >> token)
-        value += (value.empty() ? "" : " ") + token;
+    value += (value.empty() ? "" : " ") + token;
 
-    if (options_map.count(name))
+    if (options_map.count(name)) {
         options_map[name] = value;
+        sync_cout << "Set " << name << " = " << options_map[name] << " ok!" << sync_endl;
+    }
     else
         sync_cout << "No such option: " << name << sync_endl;
-}
+  }
 
 Option OptionsMap::operator[](const std::string& name) const {
     auto it = options_map.find(name);
